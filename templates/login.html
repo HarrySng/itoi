@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}iToi{% endblock %}
+
+{% block bodyhtml %}
+<div>
+	<form action="" method="post">
+		{{ form.csrf_token }}
+            <h3>{{message}}</h3>
+		<table>
+		<tr>
+            <h4>Enter Details:</h4>
+            </tr>
+            <tr>
+            	<td>{{ form.userID.label }}</td>
+            	<td>{{ form.userID }}</td>
+            </tr>
+            <tr>
+            	<td>{{ form.pswd.label }}</td>
+            	<td>{{ form.pswd }}</td>
+            </tr>
+		</table>
+		<input type="submit" value="Submit">
+            <br>
+            <br>
+            <h2><a href="{{ url_for('userSignup') }}">Need an Account? Register Here!</a></h2>
+	</form>
+</div>
+{% endblock %}

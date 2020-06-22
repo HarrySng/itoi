@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}iToi{% endblock %}
+
+{% block bodyhtml %}
+<div>
+	<form action="" method="post">
+		{{ form.csrf_token }}
+            <h3>{{message}}</h3>
+		<table>
+			<tr>
+            <h2>Register</h2>
+            </tr>
+            <tr>
+            	<td>{{ form.userID.label }}</td>
+            	<td>{{ form.userID }}</td>
+            </tr>
+            <tr>
+            	<td>{{ form.pswd.label }}</td>
+            	<td>{{ form.pswd }}</td>
+            </tr>
+            <tr>
+            	<td>{{ form.isManager.label }}</td>
+            	<td>{{ form.isManager }}</td>
+            </tr>
+		</table>
+		<input type="submit" value="Submit">
+	</form>
+</div>
+{% endblock %}
