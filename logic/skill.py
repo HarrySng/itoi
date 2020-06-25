@@ -3,6 +3,8 @@ from dbSetup import dbClasses as db
 skillClass = db.getDBClass('SKILL')
 meetingClass = db.getDBClass('MEETING')
 
+# Add or delete a skill corresponding to a meeting
+
 def manageSkill(skillName, meetingName, add = True):
 	meetingID = db.session.query(meetingClass).filter(meetingClass.MEETING_NAME == meetingName)[0].ID
 	if add:

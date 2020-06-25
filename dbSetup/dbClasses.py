@@ -17,8 +17,8 @@ def getDBClass(tableName):
 		dbClass = Base.classes.ATTENDEE
 	elif tableName == 'GOAL':
 		dbClass = Base.classes.GOAL
-	elif tableName == 'DECISION':
-		dbClass = Base.classes.DECISION
+	elif tableName == 'VOTE':
+		dbClass = Base.classes.VOTE
 	elif tableName == 'SKILL':
 		dbClass = Base.classes.SKILL
 	elif tableName == 'WEIGHT':

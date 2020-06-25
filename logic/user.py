@@ -17,3 +17,8 @@ def changeManagerStatus(userName, isManager):
 def changePassword(userName, pswd):
 	db.session.query(userClass).filter(userClass.USERNAME == userName).update({userClass.PASSWORD: pswd})
 	db.session.commit()
+
+def deleteUser(userName, pswd):
+	db.session.query(userClass).filter(userClass.USERNAME == userName).delete()
+	db.session.commit()
+
