@@ -4,7 +4,7 @@
 
 {% block bodyhtml %}
 <div>
-	<form action="" method="post">
+	<form action="{{ url_for('login') }}" method="post">
 		{{ form.csrf_token }}
             <h3>{{message}}</h3>
 		<table>
@@ -12,16 +12,24 @@
             <h2>Register</h2>
             </tr>
             <tr>
-            	<td>{{ form.userID.label }}</td>
-            	<td>{{ form.userID }}</td>
+            	<td>{{ form.mngrID.label }}</td>
+            	<td>{{ form.mngrID }}</td>
             </tr>
             <tr>
             	<td>{{ form.pswd.label }}</td>
             	<td>{{ form.pswd }}</td>
             </tr>
             <tr>
-            	<td>{{ form.isManager.label }}</td>
-            	<td>{{ form.isManager }}</td>
+                  <td>{{ form.cpswd.label }}</td>
+                  <td>{{ form.cpswd }}</td>
+            </tr>
+            <tr>
+            	<td>{{ form.emailID.label }}</td>
+            	<td>{{ form.emailID }}</td>
+            </tr>
+            <tr>
+                  <td>{{ form.key.label }}</td>
+                  <td>{{ form.key }}</td>
             </tr>
 		</table>
 		<input type="submit" value="Submit">

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}iToi{% endblock %}
+{% block title %}IToI{% endblock %}
 
 {% block bodyhtml %}
 <div>
-	<form action="" method="post">
+	<form action="{{ url_for('dashboard') }}" method="post">
 		{{ form.csrf_token }}
             <h3>{{message}}</h3>
 		<table>
@@ -19,11 +19,15 @@
             	<td>{{ form.pswd.label }}</td>
             	<td>{{ form.pswd }}</td>
             </tr>
+            <tr>
+                  <td>{{ form.key.label }}</td>
+                  <td>{{ form.key }}</td>
+            </tr>
 		</table>
 		<input type="submit" value="Submit">
             <br>
             <br>
-            <h2><a href="{{ url_for('userSignup') }}">Need an Account? Register Here!</a></h2>
+            <h2><a href="{{ url_for('signup') }}">Need an Account? Register Here!</a></h2>
 	</form>
 </div>
 {% endblock %}

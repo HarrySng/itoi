@@ -6,81 +6,105 @@ import pandas
 import numpy as np
 import pandas as pd
 from flask import Flask, request, url_for, Markup, redirect, render_template
-import sqlalchemy
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
 from forms import loginForm, signupForm
+from logic import *
+from parentLogic import *
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-pswd = 'December9_$'
-engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:{}@localhost:3306/ITOI_DB'.format(pswd),echo=True)
-Base = automap_base()
-Base.prepare(engine, reflect=True)
-
 @app.route('/', methods=['GET', 'POST'])
+def orgPage():
+	orgs = getOrgs()
+	return render_template('org.html', orgs = orgs)
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-	form = loginForm()
-	errors = []
-
-	if form.validate_on_submit():
-		data = form.data
-
-		userID = data["userID"]
-		pswd = data["pswd"]
-
-		table = Base.classes.USER
-		session = Session(engine)
-		dbUserData = session.query(table).all()
-
-		for row in dbUserData:
-			if userID == row.USERNAME:
-				if pswd == row.PASSWORD:
-					return render_template('dashboard.html')
-				else:
-					message = "The password is incorrect. Please try again."
-					return render_template('login.html', message=message, form=form)
-			else:
-				message = "This user does not exist. Please register"
-				return render_template('login.html', message=message, form=form)
+	orgName = request.form.get('orgs') # Return the org selected by user
+	orgID = db.session.query(classDict['ORG']).filter(classDict['ORG'].ORG_NAME == orgName)[0].ID
 	
-	return render_template('login.html', form = form)
-
-@app.route('/SignUp', methods=['GET', 'POST'])
-def userSignup():
 	form = signupForm()
 	errors = []
-
+	
 	if form.validate_on_submit():
 		data = form.data
-		userID = data["userID"]
-		pswd = data["pswd"]
-		isManager = data["isManager"]
-
-		table = Base.classes.USER
-		session = Session(engine)
-		dbUserData = session.query(table).all()
+		mngrID = data['mngrID']
+		pswd = data['pswd']
+		key = data['key']
+		# Check if manager ID or email already exists in org
+		qManager = db.session.query(classDict['MANAGER']).filter(classDict['MANAGER'].ORG_ID == orgID)
+		mngrIDs = []
+		for row in qManager:
+			mngrIDs.append(row.USERNAME)
+			keys.append(row.ORG_KEY)
+		if mngrID not in mngrIDs:
+			errors.append("This manager ID does not exist in this organization.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
 		
-		dbUsers = []
-		for row in dbUserData:
-			dbUsers.append(row.USERNAME)
+		# Check key
+		orgKey = db.session.query(orgClass).filter(orgClass.ORG_ID == orgID)[0].ORG_KEY
+		if key != orgKey:
+			errors.append("The key does not match the organization key.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
 
-		if userID in dbUsers:
-			message = 'The user ID %s is already in use, choose another one' % userID
-			return render_template('signup.html', message=message, form=form)
-		else:
-			userClass = Base.classes.USER
-			newUser = userClass(USERNAME = userID, PASSWORD = pswd, IS_MANAGER = isManager)
-			session.add(newUser)
-			session.commit()
-			message = 'The user has been registered. Please login to continue'
-			return render_template('login.html', message=message, form=loginForm())
+		# Check pswd
+		truepswd = db.session.query(classDict['MANAGER']).filter(classDict['MANAGER'].ORG_ID == orgID).filter(classDict['MANAGER'].USERNAME == mngrID)[0].PASSWORD
+		if pswd != truepswd:
+			errors.append("The password is incorrect.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
+
+		# If all checks pass
+		# run a dashboard function thatn pulls all info of this user and then push it to dashboard.html
+		return render_template('dashboard.html')
+
+	return render_template('login.html', form=form)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	orgName = request.form.get('orgs') # Return the org selected by user
+	orgID = db.session.query(classDict['ORG']).filter(classDict['ORG'].ORG_NAME == orgName)[0].ID
+	
+	form = signupForm()
+	errors = []
+	
+	if form.validate_on_submit():
+		data = form.data
+		mngrID = data['mngrID']
+		pswd = data['pswd']
+		cpswd = data['cpswd']
+		email = data['email']
+		key = data['key']
+		# Check if manager ID or email already exists in org
+		qManager = db.session.query(classDict['MANAGER']).filter(classDict['MANAGER'].ORG_ID == orgID)
+		mngrIDs = []
+		emailIDs = []
+		for row in qManager:
+			mngrIDs.append(row.USERNAME)
+			emailIDs.append(row.EMAIL_ID)
+			keys.append(row.ORG_KEY)
+		if mngrID in mngrIDs:
+			errors.append("This manager ID already exists in this organization.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
+		if email in emailIDs:
+			errors.append("This email ID already exists in this organization.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
+		
+		# Check key
+		orgKey = db.session.query(orgClass).filter(orgClass.ORG_ID == orgID)[0].ORG_KEY
+		if key != orgKey:
+			errors.append("The key does not match the organization key.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
+
+		# Check if password and confirm password fields match
+		if pswd != cpswd:
+			errors.append("The passwords do not match. Please try again.")
+			return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
+
+		# If all checks pass, insert SQL
+		manager.addManager(userName = mngrID, pswd = pswd, email = email, orgID = orgID)
+
+		errors.append("Manager is Registered! Please login.") # Reuse errors page for successful registration also
+		return render_template('generic_text.html', error=Markup("<br/>".join(errors)))
 
 	return render_template('signup.html', form=form)
-
-
-@app.route('/Dashboard', methods=['GET', 'POST'])
-def landingPage():
-	return render_template('dashboard.html')

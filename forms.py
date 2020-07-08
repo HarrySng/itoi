@@ -6,10 +6,13 @@ from wtforms.validators import DataRequired, Optional
 class loginForm(FlaskForm):
 	userID = StringField('Enter User ID:', validators=[DataRequired()])
 	pswd = PasswordField('Enter password:', validators=[DataRequired()])
+	key = StringField('Enter Org Key', validators=[DataRequired()])
 	submit = SubmitField('Login')
 
 class signupForm(FlaskForm):
-	userID = StringField('Enter User ID', validators=[DataRequired()])
+	mngrID = StringField('Enter Manager ID', validators=[DataRequired()])
 	pswd = PasswordField('Enter password:', validators=[DataRequired()])
-	isManager = BooleanField("Is Manager?")
+	cpswd = PasswordField('Confirm password:', validators=[DataRequired()])
+	emailID = StringField('Enter Email ID', validators=[DataRequired()])
+	key = StringField('Enter Org Key', validators=[DataRequired()])
 	submit = SubmitField('Register')

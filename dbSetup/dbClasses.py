@@ -9,7 +9,11 @@ Base.prepare(engine, reflect=True)
 session = Session(engine)
 
 def getDBClass(tableName):
-	if tableName == 'USER':
+	if tableName == 'ORG':
+		dbClass = Base.classes.ORG
+	elif tableName == 'MANAGER':
+		dbClass = Base.classes.MANAGER
+	elif tableName == 'USER':
 		dbClass = Base.classes.USER
 	elif tableName == 'MEETING':
 		dbClass = Base.classes.MEETING

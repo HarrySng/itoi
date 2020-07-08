@@ -2,8 +2,11 @@ from dbSetup import dbClasses as db
 
 userClass = db.getDBClass('USER')
 
-def addUser(userName, pswd, isManager = 0):
-	newUser = userClass(USERNAME = userName, PASSWORD = pswd, IS_MANAGER = isManager)
+# Everything should happen within the ORG
+
+def addUser(userName, pswd, email, orgName, isManager = 0):
+
+	newUser = userClass(USERNAME = userName, PASSWORD = pswd, EMAIL_ID = email, IS_MANAGER = isManager)
 	db.session.add(newUser)
 	db.session.commit()
 

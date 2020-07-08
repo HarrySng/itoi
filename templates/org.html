@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}IToI{% endblock %}
+
+{% block bodyhtml %}
+<div>
+    <form action="{{ url_for('signup') }}" method="post">
+        <br>
+        <br>
+        <br>
+        <h1>Select your Organization</h1>
+        <br>
+        <br>
+        <div class="search_categories", style="width:25%;">
+            <div class="select">
+                <select name="orgs"  id="search_categories">
+                {% for org in orgs %}
+                <option value="{{ org }}">{{ org }}</option>
+                {% endfor %}
+            </select>
+            </div>
+        </div>
+        <div class="container">
+            <div class="center">
+                <input class="myButton" type = "submit" value = "SUBMIT" />
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,20 +1,32 @@
 from dbSetup import dbClasses as db
 from logic import user, meeting, goal, attendee
 
-ratingClass = db.getDBClass('RATING')
-userClass = db.getDBClass('USER')
-goalClass = db.getDBClass('GOAL')
-meetingClass = db.getDBClass('MEETING')
-attendeeClass = db.getDBClass('ATTENDEE')
+classDict = {}
+for table in ['ORG', 'MANAGER', 'USER', 'MEETING', 'ATTENDEE', 'GOAL', 'VOTE', 'SKILL', 'RATING']:
+	classDict[table] = db.getDBClass(table)
 
+# Get ORGS to show on orgPage
+def getOrgs():
+	orgTable = db.session.query(classDict['ORG']).all()
+	orgs = []
+	for row in orgTable:
+		orgs.append(row.ORG_NAME)
+	return orgs
+
+# Get dashboard info to show on dashboard.html when user logs in
+def getDashboard(orgID, mngrID):
+	mID = db.session.query(classDict['MANAGER']).filter(classDict['MANAGER'].ORG_ID == orgID).filter(classDict['MANAGER'].USERNAME == mngrID)[0].ID
+	# This is the primary key of manager table
+	# All data to display on dashboard will be pulled from other tables using this FK
+
+"""
 def showTable(table):
-	tableClass = db.getDBClass(table)
-	tableData = db.session.query(tableClass).all()
+	tableData = db.session.query(classDict[table]).all()
 	for row in tableData:
 		print(row.__dict__)
 
-votes = vote.collectVotes(goalName, meetingName, votes)
-ratings = rating.collectRatings(meetingName)
+#votes = vote.collectVotes(goalName, meetingName, votes)
+#ratings = rating.collectRatings(meetingName)
 def finalDecision(goalName, meetingName, votes, ratings): # fetch all votes for this meeting
 	meetingID = db.session.query(meetingClass).filter(meetingClass.MEETING_NAME == meetingName)[0].ID
 	qAttendees = db.session.query(attendeeClass).filter(attendeeClass.MEETING_ID == meetingID).all()
@@ -50,3 +62,4 @@ def finalDecision(goalName, meetingName, votes, ratings): # fetch all votes for 
 	elif uncertainty == max(weightedYes, weightedNo, uncertainty):
 		finalAnswer = "too uncertain. Please reconsider!"
 	print("The team's final decision is {}.".format(finalAnswer))
+"""
