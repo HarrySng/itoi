@@ -56,6 +56,9 @@ def login():
 
 		# If all checks pass
 		# run a dashboard function thatn pulls all info of this user and then push it to dashboard.html
+		# Example:
+		results = getDashboard(orgID, mngrID)
+		
 		return render_template('dashboard.html')
 
 	return render_template('login.html', form=form)

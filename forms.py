@@ -4,7 +4,7 @@ from wtforms import StringField, IntegerField, TextAreaField, DateTimeField, Boo
 from wtforms.validators import DataRequired, Optional
 
 class loginForm(FlaskForm):
-	userID = StringField('Enter User ID:', validators=[DataRequired()])
+	mngrID = StringField('Enter User ID:', validators=[DataRequired()])
 	pswd = PasswordField('Enter password:', validators=[DataRequired()])
 	key = StringField('Enter Org Key', validators=[DataRequired()])
 	submit = SubmitField('Login')
