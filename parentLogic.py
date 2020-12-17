@@ -19,7 +19,7 @@ def getDashboard(orgID, mngrID):
 	# This is the primary key of manager table
 	# All data to display on dashboard will be pulled from other tables using this FK
 
-"""
+
 def showTable(table):
 	tableData = db.session.query(classDict[table]).all()
 	for row in tableData:
@@ -28,24 +28,30 @@ def showTable(table):
 #votes = vote.collectVotes(goalName, meetingName, votes)
 #ratings = rating.collectRatings(meetingName)
 def finalDecision(goalName, meetingName, votes, ratings): # fetch all votes for this meeting
-	meetingID = db.session.query(meetingClass).filter(meetingClass.MEETING_NAME == meetingName)[0].ID
+	
+    
+    meetingID = db.session.query(meetingClass).filter(meetingClass.MEETING_NAME == meetingName)[0].ID
 	qAttendees = db.session.query(attendeeClass).filter(attendeeClass.MEETING_ID == meetingID).all()
 	users = {}
-	for row in qAttendees:
+	
+    for row in qAttendees:
 		userID = row.USER_ID
 		userName = db.session.query(userClass).filter(userClass.ID == userID)[0].USERNAME
 		users[userID] = userName
 	userIDs = list(users)
 	decisionDict = {}
+    
 	for userID in userIDs:
 		decisionDict[users[userID]] = ["Yes" if votes[userID] == 1 else "No", ratings[userID]]
 	print("The original decision for the goal '{}' taken in '{}' meeting is:\n".format(goalName, meetingName))
-	for key in decisionDict:
+	
+    for key in decisionDict:
 		print("{} voted {}.\n".format(key, decisionDict[key][0]))
 	print("The original decision is {} percent Yes and {} percent No.".format(round((list(votes.values()).count(1)/len(votes))*100,2), round((list(votes.values()).count(0)/len(votes))*100,2)))
 	yes = []
 	no = []
-	for element in list(decisionDict.values()):
+	
+    for element in list(decisionDict.values()):
 		if element[0] == 'Yes':
 			yes.append(element[1])
 		else:
@@ -55,11 +61,11 @@ def finalDecision(goalName, meetingName, votes, ratings): # fetch all votes for 
 	uncertainty = round(100-(weightedYes+ weightedNo),2)
 	print("##### WEIGHTED DECISION #####")
 	print("The weighted decision is {} percent Yes and {} percent No with an uncertainty of {} percent.".format(weightedYes, weightedNo, uncertainty))
-	if weightedYes == max(weightedYes, weightedNo, uncertainty):
+	
+    if weightedYes == max(weightedYes, weightedNo, uncertainty):
 		finalAnswer = "GO FOR IT!"
 	elif weightedNo == max(weightedYes, weightedNo, uncertainty):
 		finalAnswer = "a NO GO!"
 	elif uncertainty == max(weightedYes, weightedNo, uncertainty):
 		finalAnswer = "too uncertain. Please reconsider!"
 	print("The team's final decision is {}.".format(finalAnswer))
-"""
